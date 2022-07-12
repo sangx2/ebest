@@ -14,7 +14,7 @@ ebest에서는 07시에서 07시 30분 사이에 재접속이 요구된다. 하�
 
 따라서 2개의 프로세스가 존재하고 그 역할은 다음과 같다.
 
-###manager.exe
+### manager.exe
 trader 프로세스의 시작&종료 관리
 - manager.exe 실행 시 기존 trader 프로세스 종료, config에 설정된 지연시간(10s) 이후 trader 프로세스 시작
 - 오전 7시 trader 프로세스 종료
