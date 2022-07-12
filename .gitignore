@@ -15,3 +15,5 @@
 # vendor/
 
 *.log
+config_manager.json
+config_trader.json
