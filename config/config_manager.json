@@ -1,0 +1,7 @@
+{
+  "ManagerSettings": {
+    "DelayStartTrader": "10s",
+    "LogLevel": "debug",
+    "LogFileName": ".\\logs\\manager.log"
+  }
+}
