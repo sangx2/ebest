@@ -54,7 +54,5 @@ func NewAPI(echo *echo.Echo) *API {
 	a.Orders = root.GET("/order/cancel/:orderNumber", getCancelOrder)
 	a.Orders = root.GET("/order/reject/:orderNumber", getRejectOrder)
 
-	a.Orders = root.GET("/stocks/:stockCode/", nil)
-
 	return a
 }
