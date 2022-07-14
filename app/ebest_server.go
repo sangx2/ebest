@@ -39,6 +39,8 @@ type EBestServer struct {
 	Balances map[string][]*model.Balance
 	// map[종목코드]종목
 	Stocks map[string]*model.Stock
+	// map[종목코드]기업정보
+	FNGs map[string]*model.FNG
 
 	// map[종목코드]map[주문번호]매매요청
 	OrderBuyRequest    map[string]map[string]*model.OrderRequest `json:"매수 요청"`
@@ -70,6 +72,7 @@ type EBestServer struct {
 	assetsMutex   sync.RWMutex
 	balancesMutex sync.RWMutex
 	stocksMutex   sync.RWMutex
+	fngsMutex     sync.RWMutex
 
 	orderBuyRequestMutex    sync.RWMutex
 	orderSellRequestMutex   sync.RWMutex
@@ -100,6 +103,7 @@ func NewEBestServer(config *model.Config) *EBestServer {
 		Assets:   make(map[string]*model.Asset),
 		Balances: make(map[string][]*model.Balance),
 		Stocks:   make(map[string]*model.Stock),
+		FNGs:     make(map[string]*model.FNG),
 
 		OrderBuyRequest:    make(map[string]map[string]*model.OrderRequest),
 		OrderSellRequest:   make(map[string]map[string]*model.OrderRequest),
@@ -214,6 +218,10 @@ func (es *EBestServer) Init() error {
 		return fmt.Errorf("Init: %w", e)
 	}
 
+	if e := es.InitFNGs(); e != nil {
+		return fmt.Errorf("Init: %w", e)
+	}
+
 	return nil
 }
 
@@ -223,6 +231,10 @@ func (es *EBestServer) Start() error {
 }
 
 func (es *EBestServer) Shutdown() {
+	if e := es.FinalizeFNGs(); e != nil {
+		log.Error("finalize FNGs error", log.Err(e))
+	}
+
 	if e := es.FinalizeBalance(); e != nil {
 		log.Error("finalize balance error", log.Err(e))
 	}

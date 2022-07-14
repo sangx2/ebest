@@ -8,11 +8,13 @@ import (
 var PATHS = []string{
 	assetsPath,
 	balancesPath,
+	fngPath,
 }
 
 const (
 	assetsPath   = "\\assets"
 	balancesPath = "\\balances"
+	fngPath      = "\\FNGs"
 
 	FileType = ".json"
 )
@@ -20,6 +22,7 @@ const (
 type FileSupplierStores struct {
 	asset   store.AssetStore
 	balance store.BalanceStore
+	FNG     store.FNGStore
 }
 
 type FileSupplier struct {
@@ -41,6 +44,7 @@ func NewFileSupplier(basePath string) *FileSupplier {
 
 	supplier.stores.asset = NewFileAssetStore(supplier)
 	supplier.stores.balance = NewFileBalanceStore(supplier)
+	supplier.stores.FNG = NewFileFNGStore(supplier)
 
 	return supplier
 }
@@ -81,4 +85,8 @@ func (fs *FileSupplier) Asset() store.AssetStore {
 
 func (fs *FileSupplier) Balance() store.BalanceStore {
 	return fs.stores.balance
+}
+
+func (fs *FileSupplier) FNG() store.FNGStore {
+	return fs.stores.FNG
 }

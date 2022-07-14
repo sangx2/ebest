@@ -20,4 +20,6 @@ type EBestServer interface {
 	GetOrderRequestNumbers(orderType string, stockCode string) ([]string, error)
 	GetOrderRequest(stockCode, orderType, orderNumber string) (*model.OrderRequest, error)
 	GetOrder(orderType, orderNumber string) (*model.Order, error)
+
+	GetFNG(stockCode string) *model.FNG
 }

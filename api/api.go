@@ -16,6 +16,8 @@ type API struct {
 	Stocks *echo.Route // `{BaseURI}/stocks`
 
 	Orders *echo.Route // `{BaseURI}/orders`
+
+	FNGs *echo.Route // `{BaseURI}/FNGs`
 }
 
 func NewAPI(echo *echo.Echo) *API {
@@ -53,6 +55,8 @@ func NewAPI(echo *echo.Echo) *API {
 	a.Orders = root.GET("/order/modify/:orderNumber", getModifyOrder)
 	a.Orders = root.GET("/order/cancel/:orderNumber", getCancelOrder)
 	a.Orders = root.GET("/order/reject/:orderNumber", getRejectOrder)
+
+	a.FNGs = root.GET("/fngs/:stockCode", getFNG)
 
 	return a
 }

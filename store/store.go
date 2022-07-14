@@ -23,6 +23,7 @@ func Do(f func(result *Result)) Channel {
 type Store interface {
 	Asset() AssetStore
 	Balance() BalanceStore
+	FNG() FNGStore
 }
 
 type AssetStore interface {
@@ -33,4 +34,9 @@ type AssetStore interface {
 type BalanceStore interface {
 	Get(accountNumber, stockCode, date string) Channel
 	Save(acntNo string, balance *model.Balance) Channel
+}
+
+type FNGStore interface {
+	GetAll() Channel
+	SaveAll(FNGs map[string]*model.FNG) Channel
 }
