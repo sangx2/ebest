@@ -97,8 +97,6 @@ func (es *EBestServer) InitOrder() error {
 	es.reals[ebest.SC4] = sc4Real
 
 	// 실시간 주문 상태
-	doneChan := make(chan bool, 1)
-	es.doneChans["stock"] = doneChan
 	es.wg.Add(1)
 	go es.startOrderReceiver()
 
@@ -107,6 +105,7 @@ func (es *EBestServer) InitOrder() error {
 	return nil
 }
 
+// startOrderReceiver Goroutine
 func (es *EBestServer) startOrderReceiver() {
 	defer es.wg.Done()
 

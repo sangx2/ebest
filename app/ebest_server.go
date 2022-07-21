@@ -243,6 +243,11 @@ func (es *EBestServer) Shutdown() {
 		log.Error("finalize assets error", log.Err(e))
 	}
 
+	for key, doneChan := range es.doneChans {
+		log.Debug("doneChan", log.String("key", key))
+		doneChan <- true
+	}
+
 	// eBest - reals
 	for _, recvDoneChan := range es.realDoneChans {
 		recvDoneChan <- true

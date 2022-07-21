@@ -23,10 +23,8 @@ func (es *EBestServer) InitFNGs() error {
 		es.FNGs = FNGs
 	}
 
-	doneChan := make(chan bool, 1)
-	es.doneChans["FNGs"] = doneChan
 	es.wg.Add(1)
-	go es.UpdateFNGs()
+	go es.updateFNGs()
 
 	log.Info("기업정보 초기화 완료")
 
@@ -47,11 +45,12 @@ func (es *EBestServer) FinalizeFNGs() error {
 	return nil
 }
 
-func (es *EBestServer) UpdateFNGs() {
+// updateFNGs Goroutine
+func (es *EBestServer) updateFNGs() {
 	defer es.wg.Done()
 
 	doneChan := make(chan bool, 1)
-	es.doneChans["UpdateFNGs"] = doneChan
+	es.doneChans["updateFNGs"] = doneChan
 
 	es.stocksMutex.Lock()
 	stocks := es.Stocks
