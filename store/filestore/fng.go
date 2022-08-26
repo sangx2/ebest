@@ -5,6 +5,7 @@ import (
 	"github.com/sangx2/ebest/store"
 	"io/ioutil"
 	"os"
+	"strings"
 )
 
 type FileFNGStore struct {
@@ -29,14 +30,14 @@ func (f *FileFNGStore) GetAll() store.Channel {
 		} else {
 			for _, fileInfo := range fileInfos {
 				if !fileInfo.IsDir() {
-					if file, e := os.Open(path + fileInfo.Name() + FileType); e != nil {
+					if file, e := os.Open(path + "\\" + fileInfo.Name()); e != nil {
 						if os.IsNotExist(e) {
 							continue
 						} else {
 							result.Err = e
 						}
 					} else {
-						FNGs[fileInfo.Name()] = model.FNGFromJson(file)
+						FNGs[strings.Split(fileInfo.Name(), ".")[0]] = model.FNGFromJson(file)
 					}
 				}
 			}
