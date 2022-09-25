@@ -6,8 +6,6 @@ import (
 	"github.com/sangx2/ebest-sdk/impl"
 	"github.com/sangx2/ebest-sdk/interfaces"
 	"github.com/sangx2/ebest/model"
-	"github.com/sangx2/ebest/store"
-	"github.com/sangx2/ebest/store/filestore"
 	"github.com/sangx2/go-servers/request"
 	log "github.com/sangx2/golog"
 	"sync"
@@ -63,9 +61,6 @@ type EBestServer struct {
 
 	// server
 	requestServer *request.Server
-
-	// store
-	store store.Store
 
 	// mutex
 	accountsMutex sync.RWMutex
@@ -189,15 +184,6 @@ func (es *EBestServer) Init() error {
 	}
 	es.requestServer.Start()
 
-	// store
-	// TODO: database supplier
-	if !es.config.SQLSettings.Enable {
-		es.store = filestore.NewFileSupplier(es.config.AppSettings.DataPath)
-	}
-	if es.store == nil {
-		return fmt.Errorf("Init: store is nil")
-	}
-
 	if e := es.InitAccount(); e != nil {
 		return fmt.Errorf("Init: %w", e)
 	}
@@ -231,18 +217,6 @@ func (es *EBestServer) Start() error {
 }
 
 func (es *EBestServer) Shutdown() {
-	if e := es.FinalizeFNGs(); e != nil {
-		log.Error("finalize FNGs error", log.Err(e))
-	}
-
-	if e := es.FinalizeBalance(); e != nil {
-		log.Error("finalize balance error", log.Err(e))
-	}
-
-	if e := es.FinalizeAssets(); e != nil {
-		log.Error("finalize assets error", log.Err(e))
-	}
-
 	for key, doneChan := range es.doneChans {
 		log.Debug("doneChan", log.String("key", key))
 		doneChan <- true

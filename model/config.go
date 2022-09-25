@@ -12,7 +12,6 @@ type AppSettings struct {
 	CertPasswd string
 	Server     string
 	ResPath    string
-	DataPath   string
 	QueueSize  int
 }
 
@@ -31,9 +30,6 @@ func (as *AppSettings) isValid() error {
 	}
 	if len(as.ResPath) == 0 {
 		return errors.New("Config.AppSettings.ResPath is 0")
-	}
-	if len(as.DataPath) == 0 {
-		return errors.New("Config.AppSettings.DataPath is 0")
 	}
 	if as.QueueSize == 0 {
 		return errors.New("Config.AppSettings.QueueSize is 0")
@@ -84,16 +80,6 @@ func (as *APISettings) isValid() error {
 	return nil
 }
 
-// SQLSettings :
-type SQLSettings struct {
-	Enable     bool
-	DataSource string
-}
-
-func (ss *SQLSettings) isValid() error {
-	return nil
-}
-
 type ManagerSettings struct {
 	DelayStartTrader string
 	LogLevel         string
@@ -133,7 +119,6 @@ type Config struct {
 	AppSettings     *AppSettings
 	AccountSettings *AccountSettings
 	APISettings     *APISettings
-	SQLSettings     *SQLSettings
 	ManagerSettings *ManagerSettings
 	TraderSettings  *TraderSettings
 }
@@ -151,11 +136,6 @@ func (c *Config) IsValid() error {
 	}
 	if c.APISettings != nil {
 		if err := c.APISettings.isValid(); err != nil {
-			return err
-		}
-	}
-	if c.SQLSettings != nil {
-		if err := c.SQLSettings.isValid(); err != nil {
 			return err
 		}
 	}

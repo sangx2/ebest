@@ -5,8 +5,6 @@ import (
 	"github.com/sangx2/ebest-sdk/ebest"
 	"github.com/sangx2/ebest-sdk/res"
 	"github.com/sangx2/ebest/model"
-	"github.com/sangx2/ebest/store"
-	"github.com/sangx2/ebest/utils"
 	log "github.com/sangx2/golog"
 )
 
@@ -28,40 +26,11 @@ func (es *EBestServer) InitAssets() error {
 			if resp := <-cspaq12200Req.RespChan; resp.Error != nil {
 				return fmt.Errorf("InitAssets: %v", resp.Error)
 			} else {
-				// 2. 데이터 조회
-				queryAsset := <-es.store.Asset().Get(account.Number, utils.GetDateString())
-				if queryAsset.Err != nil {
-					return fmt.Errorf("InitAssets: %v", queryAsset.Err)
-				}
-
-				// 3. 자산 객체 생성
-				var asset *model.Asset
-				if queryAsset.Data != nil {
-					asset = queryAsset.Data.(*model.Asset)
-					asset.CSPAQ12200OutBlock2 = resp.OutBlocks[1].(res.CSPAQ12200OutBlock2)
-				} else {
-					asset = model.NewAsset(account.Number, resp.OutBlocks[1].(res.CSPAQ12200OutBlock2))
-				}
-				es.Assets[account.Number] = asset
+				es.Assets[account.Number] = model.NewAsset(account.Number, resp.OutBlocks[1].(res.CSPAQ12200OutBlock2))
 			}
 		}
 	}
 	log.Info("asset 초기화 완료")
-
-	return nil
-}
-
-// FinalizeAssets 자산 정보 저장
-func (es *EBestServer) FinalizeAssets() error {
-	for _, asset := range es.Assets {
-		var queryAsset store.Result
-
-		queryAsset = <-es.store.Asset().Save(asset)
-		if queryAsset.Err != nil {
-			return fmt.Errorf("FinalizeAssets: %v", queryAsset.Err)
-		}
-	}
-	log.Info("asset 정보 저장 완료")
 
 	return nil
 }

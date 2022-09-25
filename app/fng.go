@@ -1,7 +1,6 @@
 package app
 
 import (
-	"fmt"
 	"github.com/sangx2/ebest-sdk/ebest"
 	"github.com/sangx2/ebest-sdk/res"
 	"github.com/sangx2/ebest/model"
@@ -12,35 +11,10 @@ import (
 // InitFNGs 기업 정보 초기화
 // - 주식 정보 초기화(InitStocks)가 요구됨
 func (es *EBestServer) InitFNGs() error {
-	queryFNGs := <-es.store.FNG().GetAll()
-	if queryFNGs.Err != nil {
-		return fmt.Errorf("InitFNGs: %s", queryFNGs.Err)
-	}
-
-	var FNGs map[string]*model.FNG
-	if queryFNGs.Data != nil {
-		FNGs = queryFNGs.Data.(map[string]*model.FNG)
-		es.FNGs = FNGs
-	}
-
 	es.wg.Add(1)
 	go es.updateFNGs()
 
 	log.Info("기업정보 초기화 완료")
-
-	return nil
-}
-
-func (es *EBestServer) FinalizeFNGs() error {
-	es.fngsMutex.Lock()
-	fngs := es.FNGs
-	es.fngsMutex.Unlock()
-
-	query := <-es.store.FNG().SaveAll(fngs)
-	if query.Err != nil {
-		return fmt.Errorf("FinalizeFNGs: %s", query.Err)
-	}
-	log.Info("FNG 정보 저장 완료")
 
 	return nil
 }

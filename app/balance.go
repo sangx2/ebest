@@ -5,13 +5,11 @@ import (
 	"github.com/sangx2/ebest-sdk/ebest"
 	"github.com/sangx2/ebest-sdk/res"
 	"github.com/sangx2/ebest/model"
-	"github.com/sangx2/ebest/store"
-	"github.com/sangx2/ebest/utils"
 	log "github.com/sangx2/golog"
 )
 
+// InitBalance 잔고 정보 초기화
 func (es *EBestServer) InitBalance() error {
-	// 1. 계좌 목록 조회
 	for _, account := range es.GetAccounts() {
 		req := model.NewQueryRequest(ebest.T0424, false, res.T0424InBlock{Accno: account.Number})
 		if err := es.requestServer.Request(ebest.T0424, req); err != nil {
@@ -21,43 +19,12 @@ func (es *EBestServer) InitBalance() error {
 				return fmt.Errorf("InitBalances: %v", resp.Error)
 			} else {
 				for _, outBlock := range resp.OutBlocks[1].([]res.T0424OutBlock1) {
-					// 2. 데이터 조회
-					queryBalance := <-es.store.Balance().Get(account.Number, outBlock.Expcode, utils.GetDateString())
-					if queryBalance.Err != nil {
-						log.Error("InitBalances", log.Err(queryBalance.Err))
-						continue
-					}
-
-					var balance *model.Balance
-					if queryBalance.Data != nil {
-						balance = queryBalance.Data.(*model.Balance)
-						balance.T0424OutBlock1 = outBlock
-					} else {
-						balance = model.NewBalance(outBlock)
-					}
-
-					es.Balances[account.Number] = append(es.Balances[account.Number], balance)
+					es.Balances[account.Number] = append(es.Balances[account.Number], model.NewBalance(outBlock))
 				}
 			}
 		}
 	}
 	log.Info("balance 초기화 완료")
-
-	return nil
-}
-
-func (es *EBestServer) FinalizeBalance() error {
-	for acntNo, balances := range es.Balances {
-		var queryBalance store.Result
-
-		for _, balance := range balances {
-			queryBalance = <-es.store.Balance().Save(acntNo, balance)
-			if queryBalance.Err != nil {
-				return fmt.Errorf("FinalizeBalances: %v", queryBalance.Err)
-			}
-		}
-	}
-	log.Info("balance 정보 저장 완료")
 
 	return nil
 }
