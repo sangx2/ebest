@@ -42,17 +42,12 @@ trader 프로세스의 시작&종료 관리
     "CertPasswd": "",
     "Server":"demo.ebestsec.co.kr",
     "ResPath": "C:\\eBEST\\xingAPI\\Res\\",
-    "DataPath": ".\\data",
     "QueueSize": 1000
   },
   "AccountSettings": {
     "Accounts": {
       "00000000000": "0000"
     }
-  },
-  "SQLSettings": {
-    "Enable": false,
-    "DataSource": ""
   },
   "APISettings": {
     "KeyAuth": {
@@ -117,6 +112,3 @@ trader 프로세스의 시작&종료 관리
 
 [기타]
 - 실시간 뉴스 정보
-
-[설정]
-- 데이터베이스 연동
