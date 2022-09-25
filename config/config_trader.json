@@ -5,17 +5,12 @@
     "CertPasswd": "",
     "Server":"demo.ebestsec.co.kr",
     "ResPath": "C:\\eBEST\\xingAPI\\Res\\",
-    "DataPath": ".\\data",
     "QueueSize": 1000
   },
   "AccountSettings": {
     "Accounts": {
       "00000000000": "0000"
     }
-  },
-  "SQLSettings": {
-    "Enable": false,
-    "DataSource": ""
   },
   "APISettings": {
     "KeyAuth": {
