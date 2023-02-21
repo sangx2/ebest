@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package="./proto";
+
+service News {
+  rpc News(NewsRequest) returns (stream NewsResponse) {}
+}
+
+message NewsRequest {
+  string ServerName = 6;
+}
+
+message NewsResponse {
+  string Language = 1;
+  string Date = 2;
+  string Time = 3;
+  string Publisher = 4;
+  string Title = 5;
+  string Body = 6;
+}
